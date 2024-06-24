@@ -24,5 +24,10 @@ def whatsapp_notification(driver: WebDriver,message):
     button = driver.find_element(By.XPATH, X_SEND_MESSAGE_BUTTON )
     button.click()
 
-    logging.warn(f"Sended message to Whatsapp: {message} ")
-    time.sleep(85)
+    i = 0
+    while i < 91:
+        time.sleep(1)
+        logging.warn(f"Sending message to Whatsapp. Waiting time : {i} ")
+        i = i + 1
+
+    logging.warn(f"Sending message to Whatsapp: {message} ")

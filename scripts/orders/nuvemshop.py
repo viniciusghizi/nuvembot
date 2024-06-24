@@ -7,7 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from classes.order_class import order_class as Order
 import logging, time
 
-from variables.constants import URL_NUVEMSHOP,ID_USER_NUVEM, ID_PASS_NUVEM, USER_NUVEMSHOP,PASS_NUVEMSHOP,URL_CONFIRMED_PAYMENT, X_ORDER_NUMBER, X_ORDER_DETAIL_NAME, X_ORDER_DETAIL_VARIATION, X_ORDER_DETAIL_QUANTITY, X_EMBALADO_BUTTON, X_PRINT_BUTTON, X_PRODUCTS_QUANTITY, X_PDF_PRINT, MESSAGE_ORDER_CHECKED, MESSAGE_ORDER_NOT_FOUNDED
+from variables.constants import URL_NUVEMSHOP,ID_USER_NUVEM, ID_PASS_NUVEM, USER_NUVEMSHOP,PASS_NUVEMSHOP,URL_CONFIRMED_PAYMENT, X_ORDER_NUMBER, X_ORDER_DETAIL_NAME, X_ORDER_DETAIL_VARIATION, X_ORDER_DETAIL_QUANTITY, X_EMBALADO_BUTTON, X_PRODUCTS_QUANTITY, MESSAGE_ORDER_CHECKED, MESSAGE_ORDER_NOT_FOUNDED
 from scripts.login import login
 from scripts.utils.notifications import whatsapp_notification
 
@@ -22,19 +22,21 @@ def consult_created_orders(driver: WebDriver) :
     orders = get_order( driver )
 
     if len(orders) > 0:
+        print_order(driver)
         whatsapp_notification( driver , MESSAGE_ORDER_CHECKED )
         whatsapp_notification( driver , orders )
-    #print_order(driver)
+    
     else :
         whatsapp_notification( driver, MESSAGE_ORDER_NOT_FOUNDED )
 
 def print_order(driver: WebDriver) :
-    driver.find_element(By.XPATH, X_PRINT_BUTTON).click()
-    time.sleep(10)
+    url = driver.current_url 
+    driver.get(url.replace("v2/orders/","orders/packing_slip/"))
 
     logging.warning("3 - Printing Order")
-    driver.find_element(By.XPATH, X_PDF_PRINT).click()
-
+    driver.execute_script("window.print()")
+    
+    logging.warning("4 - Print finished")
 
 def update_order(driver: WebDriver) :
     return driver.find_element(By.XPATH, X_EMBALADO_BUTTON).click()

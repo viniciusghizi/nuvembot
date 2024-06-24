@@ -1,2 +1,4 @@
 *.pyc 
 geckodriver.log
+mozilla.pdf
+variables.txt

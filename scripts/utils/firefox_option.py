@@ -24,8 +24,8 @@ def firefox_option():
     OPTIONS.set_preference("print.show_print_progress", False)
     OPTIONS.set_preference('print.save_as_pdf.links.enabled', True)
     
-    OPTIONS.set_preference("print_printer", "Mozilla Save to PDF")
-    OPTIONS.set_preference("print.printer_Mozilla_Save_to_PDF.print_to_file", True)
-    OPTIONS.set_preference('print.printer_Mozilla_Save_to_PDF.print_to_filename', "/tmp/file01.pdf")
+    OPTIONS.set_preference("print_printer", "Save to PDF")
+    OPTIONS.set_preference("print.printer_Save_to_PDF.print_to_file", True)
+    OPTIONS.set_preference('print.printer_Save_to_PDF.print_to_filename', "mozilla.pdf")
 
     return OPTIONS
