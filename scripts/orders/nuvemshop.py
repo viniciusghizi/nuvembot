@@ -13,13 +13,13 @@ from scripts.utils.notifications import whatsapp_notification
 
 
 def consult_created_orders(driver: WebDriver) :
-    wait = WebDriverWait(driver, 200)
     
     driver.get(URL_NUVEMSHOP)
     logging.warning("1 - Logging NUVEMSHOP")
     
     login( ID_USER_NUVEM , ID_PASS_NUVEM , USER_NUVEMSHOP , PASS_NUVEMSHOP ,  driver )
-    orders = get_order( driver , wait )
+
+    orders = get_order( driver )
 
     if len(orders) > 0:
         whatsapp_notification( driver , MESSAGE_ORDER_CHECKED )
@@ -39,7 +39,7 @@ def print_order(driver: WebDriver) :
 def update_order(driver: WebDriver) :
     return driver.find_element(By.XPATH, X_EMBALADO_BUTTON).click()
 
-def get_order(driver: WebDriver, wait: WebDriverWait):
+def get_order(driver: WebDriver):
     driver.get(URL_CONFIRMED_PAYMENT)
     logging.warning("2 - Getting Order Details")
     
