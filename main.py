@@ -5,46 +5,46 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 from variables import constants as consts
-from scripts.orders.nuvemshop import consult_created_orders
 from scripts.utils.firefox_option import firefox_option
-from scripts.utils.notifications import whatsapp_notification
+from scripts.utils import notifications as WhatsappService
+from scripts.orders import nuvemshop as NuvemshopService
+from messages import messages as Messages
 
-MAX_TENTATIVAS_VER_EMAIL = range(2)
+def open_browser(message : Messages):
 
-def acessar_browser():
-
-    logging.info("Acessando Navegador")
+    logging.warning(message['WARN_OPEN_BROWSER'])
 
     OPTIONS = firefox_option()
     driver = webdriver.Firefox(options=OPTIONS)
     
     return  driver
 
-def tentativas_login_loja():
-    for tentativa in MAX_TENTATIVAS_VER_EMAIL:
-        DRIVER = acessar_browser()
+def try_login_shop(message : Messages):
+    for attempt in consts.MAX_RETRIES_LOGIN:
+        DRIVER = open_browser(message)
         try:
-            PEDIDOS = consult_created_orders(DRIVER)
+            PEDIDOS = NuvemshopService.check_created_orders(DRIVER, message)
             
             return PEDIDOS
         except Exception:
-            numero_execucao = tentativa + 1
-            logging.error(f"FALHA {numero_execucao} ao tentar obter PEDIDOS")
+            logging.error(f"{message['ERROR_ATTEMPT_LOGIN']} {attempt + 1}")
             logging.error(traceback.format_exc())
             
-    logging.warning("FALHA EM TODAS TENTATIVAS DE OBTER PEDIDOS")
+    logging.warning(message['ERROR_ATTEMPT_LOGIN'])
 
-def get_orders():
-    logging.warning("Consulting Orders.")
-    PEDIDOS = tentativas_login_loja()
+def get_orders(message: Messages):
+    logging.warning(message['INFO_INITIALIZE'])
+    logging.warning(message['WARN_MAIN_GETTING_ORDERS'])
+    PEDIDOS = try_login_shop(message)
     
     if len(PEDIDOS) == 0:
-        logging.warning("We don't have new orders")
+        logging.warning(message['WARN_MAIN_NOT_FOUND_NEW_ORDERS'])
         return
-    logging.warning("3 - Creating orders on supplier")
-    
+    logging.warning(message['INFO_END'])
+
+
 if __name__ == '__main__':
-    logging.warning("INITIALIZING.")
-    if 'pedidos' in sys.argv:
-        get_orders()
+    language = consts.LANGUAGE_PT if 'pedidos' in sys.argv else consts.LANGUAGE_US
+    get_orders(Messages.messages[language])
+
 
