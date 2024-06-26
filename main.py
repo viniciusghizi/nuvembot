@@ -6,11 +6,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from variables import constants as consts
 from scripts.utils.firefox_option import firefox_option
-from scripts.utils import notifications as WhatsappService
+from scripts.utils import notifications as NotificationService
 from scripts.orders import nuvemshop as NuvemshopService
-from messages import messages as Messages
+from dictionary import messages as Dictionary
 
-def open_browser(message : Messages):
+def open_browser(message : Dictionary):
 
     logging.warning(message['WARN_OPEN_BROWSER'])
 
@@ -19,7 +19,7 @@ def open_browser(message : Messages):
     
     return  driver
 
-def try_login_shop(message : Messages):
+def try_login_shop(message : Dictionary):
     for attempt in consts.MAX_RETRIES_LOGIN:
         DRIVER = open_browser(message)
         try:
@@ -32,19 +32,23 @@ def try_login_shop(message : Messages):
             
     logging.warning(message['ERROR_ATTEMPT_LOGIN'])
 
-def get_orders(message: Messages):
+def get_orders(message: Dictionary):
     logging.warning(message['INFO_INITIALIZE'])
+    driver = open_browser(message)
     logging.warning(message['WARN_MAIN_GETTING_ORDERS'])
-    PEDIDOS = try_login_shop(message)
+    ORDERS = NuvemshopService.check_created_orders(driver, message)
     
-    if len(PEDIDOS) == 0:
+    if len(ORDERS) == 0:
         logging.warning(message['WARN_MAIN_NOT_FOUND_NEW_ORDERS'])
-        return
-    logging.warning(message['INFO_END'])
-
-
+        NotificationService.whatsapp_notification( driver, message['MESSAGE_ORDER_NOT_FOUNDED'], message )
+    else:
+        NuvemshopService.print_order( driver, message )
+        NotificationService.whatsapp_notification( driver , message['INFO_NOTIFICATION_ORDER_CHECKED'], message )
+        NotificationService.whatsapp_notification( driver , ORDERS, message )
+    return True
+    
 if __name__ == '__main__':
     language = consts.LANGUAGE_PT if 'pedidos' in sys.argv else consts.LANGUAGE_US
-    get_orders(Messages.messages[language])
+    get_orders(Dictionary.messages[language])
 
 

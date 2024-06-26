@@ -1,5 +1,5 @@
 from selenium import webdriver
-from variables.constants import GRAPHIC_INTERFACE
+from variables.constants import GRAPHIC_INTERFACE, FIREFOX_PROFILE, FIREFOX_BINARY_LOCATION
 
 def firefox_option():
     OPTIONS = webdriver.FirefoxOptions()
@@ -17,8 +17,8 @@ def firefox_option():
     OPTIONS.set_preference("dom.ipc.processCount", 1)
     OPTIONS.set_preference("permissions.default.image", 2)
 
-    OPTIONS.binary_location = '/snap/firefox/4451/usr/lib/firefox/firefox'
-    OPTIONS.profile = '/home/viniciusghizi/snap/firefox/common/.mozilla/firefox/ovnyk8my.default'
+    OPTIONS.binary_location = FIREFOX_BINARY_LOCATION
+    OPTIONS.profile = FIREFOX_PROFILE
 
     OPTIONS.set_preference("print.always_print_silent", True)
     OPTIONS.set_preference("print.show_print_progress", False)

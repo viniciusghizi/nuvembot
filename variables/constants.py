@@ -2,6 +2,8 @@ import os
 
 #ETC
 GRAPHIC_INTERFACE=1
+FIREFOX_PROFILE='/home/viniciusghizi/snap/firefox/common/.mozilla/firefox/ovnyk8my.default'
+FIREFOX_BINARY_LOCATION='/snap/firefox/4451/usr/lib/firefox/firefox'
 LANGUAGE_US='us'
 LANGUAGE_PT='br'
 MAX_RETRIES_LOGIN=range(2)
